@@ -1,4 +1,5 @@
 using Domain.Repositories;
+using Microsoft.AspNetCore.Mvc;
 using NLog;
 using YoutubeCloneAPI.Extensions;
 
@@ -18,6 +19,12 @@ namespace YoutubeCloneAPI
 			builder.Services.ConfigureRepositoryManager();
 			builder.Services.ConfigureServiceManager();
 			builder.Services.ConfigureSqlContext(builder.Configuration);
+
+			builder.Services.Configure<ApiBehaviorOptions>(options =>
+			{
+				options.SuppressModelStateInvalidFilter = true; // Disable default model state validation
+			});
+
 			builder.Services.AddControllers()
 				.AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly);
 

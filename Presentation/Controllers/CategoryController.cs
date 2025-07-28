@@ -1,6 +1,7 @@
 ﻿using Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Service.Abstractions;
+using Shared.DTOs;
 
 namespace Presentation.Controllers
 {
@@ -23,12 +24,23 @@ namespace Presentation.Controllers
 			return Ok(categories);
 		}
 
-		[HttpGet("{id:guid}")]
+		[HttpGet("{id:guid}", Name = "CategoryById")]
 		public IActionResult GetCategory(Guid id)
 		{
 			var category = _service.CategoryService.GetCategory(id, trackChanges: false);
 			
 			return Ok(category);
+		}
+
+		[HttpPost]
+		public IActionResult CreateCategory([FromBody] CategoryForCreationDto category)
+		{
+			if(category is null)
+				return BadRequest("Category data is null.");
+
+			var createdCategory = _service.CategoryService.CreateCategory(category);
+
+			return CreatedAtRoute("CategoryById", new { id = createdCategory.Id }, createdCategory);
 		}
 	}
 	

@@ -15,5 +15,14 @@ namespace Domain.Entities
 		public string Description { get; set; }
 		public string CreatedAt { get; set; } = DateTime.Now.ToString("g");
 		public string? UpdatedAt { get; set; }
+
+		public Category() { }
+
+		public Category(string name, string description)
+		{
+			Name = name;
+			Description = description;
+			UpdatedAt = DateTime.Now.ToString("g");
+		}
 	}
 }

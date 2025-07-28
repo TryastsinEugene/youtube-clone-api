@@ -1,4 +1,5 @@
-﻿using Domain.Exceptions;
+﻿using Domain.Entities;
+using Domain.Exceptions;
 using Domain.Repositories;
 using Service.Abstractions;
 using Shared.DTOs;
@@ -12,6 +13,25 @@ namespace Services
 		public CategoryService(IRepositoryManager repository)
 		{
 			_repository = repository;
+		}
+
+		public CategoryDto CreateCategory(CategoryForCreationDto categoryDto)
+		{
+			var categoryEntity = new Category(categoryDto.Name, categoryDto.Description);
+			
+			_repository.Category.CreateCategory(categoryEntity);
+			_repository.Save();
+
+			var categoryForReturn = new CategoryDto
+			(
+				categoryEntity.Id,
+				categoryEntity.Name,
+				categoryEntity.Description,
+				categoryEntity.CreatedAt,
+				categoryEntity.UpdatedAt
+			);
+
+			return categoryForReturn;
 		}
 
 		public IEnumerable<CategoryDto> GetAllCategories(bool trackChanges)

@@ -9,6 +9,8 @@ namespace Persistance.Repositories
 		{
 		}
 
+		public void CreateCategory(Category category) => Create(category);
+
 		public IEnumerable<Category> GetAllCategories(bool trackChanges) =>
 			FindAll(trackChanges)
 				.OrderBy(c => c.Name)

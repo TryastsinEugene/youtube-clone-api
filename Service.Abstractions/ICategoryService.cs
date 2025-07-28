@@ -7,5 +7,6 @@ namespace Service.Abstractions
 	{
 		IEnumerable<CategoryDto> GetAllCategories(bool trackChanges);
 		CategoryDto GetCategory(Guid categoryId, bool trackChanges);
+		CategoryDto CreateCategory(CategoryForCreationDto categoryDto);
 	}
 }
