@@ -1,5 +1,4 @@
-﻿using Domain.Repositories;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Service.Abstractions;
 using Shared.DTOs;
 
@@ -17,30 +16,55 @@ namespace Presentation.Controllers
 		}
 
 		[HttpGet]
-		public IActionResult GetCategories()
+		public async Task<IActionResult> GetCategories()
 		{
-			var categories = _service.CategoryService.GetAllCategories(trackChanges: false);
+			var categories = await _service.CategoryService.GetAllCategoriesAsync(trackChanges: false);
 
 			return Ok(categories);
 		}
 
 		[HttpGet("{id:guid}", Name = "CategoryById")]
-		public IActionResult GetCategory(Guid id)
+		public async Task<IActionResult> GetCategory(Guid id)
 		{
-			var category = _service.CategoryService.GetCategory(id, trackChanges: false);
+			var category = await _service.CategoryService.GetCategoryAsync(id, trackChanges: false);
 			
 			return Ok(category);
 		}
 
 		[HttpPost]
-		public IActionResult CreateCategory([FromBody] CategoryForCreationDto category)
+		public async Task<IActionResult> CreateCategory([FromBody] CategoryForCreationDto category)
 		{
 			if(category is null)
 				return BadRequest("Category data is null.");
 
-			var createdCategory = _service.CategoryService.CreateCategory(category);
+			if(!ModelState.IsValid)
+				return UnprocessableEntity(ModelState);
+
+			var createdCategory = await _service.CategoryService.CreateCategoryAsync(category);
 
 			return CreatedAtRoute("CategoryById", new { id = createdCategory.Id }, createdCategory);
+		}
+
+		[HttpDelete("{id:guid}")]
+		public async Task<IActionResult> DeleteCategory(Guid id)
+		{
+			await _service.CategoryService.DeleteCategoryAsync(id, trackChanges: false);
+			return NoContent();
+		}
+
+		[HttpPut("{id:guid}")]
+		public async Task<IActionResult> UpdateCategory(Guid id, [FromBody] CategoryForUpdateDto category)
+		{
+			if (category is null)
+				return BadRequest("Category data is null.");
+
+
+			if (!ModelState.IsValid)
+				return UnprocessableEntity(ModelState);
+
+			await _service.CategoryService.UpdateCategoryAsync(id, category, trackChanges: true);
+
+			return NoContent();
 		}
 	}
 	

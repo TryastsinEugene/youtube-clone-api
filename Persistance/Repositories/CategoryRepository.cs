@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Persistance.Repositories
 {
@@ -11,14 +12,16 @@ namespace Persistance.Repositories
 
 		public void CreateCategory(Category category) => Create(category);
 
-		public IEnumerable<Category> GetAllCategories(bool trackChanges) =>
-			FindAll(trackChanges)
-				.OrderBy(c => c.Name)
-				.ToList();
+		public void DeleteCategory(Category category) => Delete(category);
 
-		public Category GetCategory(Guid categoryId, bool trackChanges) =>
-			FindByCondition(c => c.Id.Equals(categoryId), trackChanges)
-			.SingleOrDefault();
+		public async Task<IEnumerable<Category>> GetAllCategoriesAsync(bool trackChanges) =>
+			await FindAll(trackChanges)
+				.OrderBy(c => c.Name)
+				.ToListAsync();
+
+		public async  Task<Category> GetCategoryAsync(Guid categoryId, bool trackChanges) =>
+			await FindByCondition(c => c.Id.Equals(categoryId), trackChanges)
+			.SingleOrDefaultAsync();
 
 	}
 	

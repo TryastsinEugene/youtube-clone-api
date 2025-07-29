@@ -1,8 +1,7 @@
-﻿namespace Shared.DTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Shared.DTOs
 {
-	public record class CategoryForCreationDto(string Name,
-		string Description
-	);
-
-
+	public record class CategoryForCreationDto : CategoryForManipulationDto;
+	
 }

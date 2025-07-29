@@ -3,6 +3,6 @@
 	public interface IRepositoryManager
 	{
 		ICategoryRepository Category { get; }
-		void Save();
+		Task SaveAsync();
 	}
 }

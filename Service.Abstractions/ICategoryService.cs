@@ -5,8 +5,10 @@ namespace Service.Abstractions
 {
 	public interface ICategoryService
 	{
-		IEnumerable<CategoryDto> GetAllCategories(bool trackChanges);
-		CategoryDto GetCategory(Guid categoryId, bool trackChanges);
-		CategoryDto CreateCategory(CategoryForCreationDto categoryDto);
+		Task<IEnumerable<CategoryDto>> GetAllCategoriesAsync(bool trackChanges);
+		Task<CategoryDto> GetCategoryAsync(Guid categoryId, bool trackChanges);
+		Task<CategoryDto> CreateCategoryAsync(CategoryForCreationDto categoryDto);
+		Task UpdateCategoryAsync(Guid categoryId, CategoryForUpdateDto categoryDto, bool trackChanges);	
+		Task DeleteCategoryAsync(Guid categoryId, bool trackChanges);
 	}
 }

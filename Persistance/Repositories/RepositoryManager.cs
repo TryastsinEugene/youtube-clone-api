@@ -16,7 +16,7 @@ namespace Persistance.Repositories
 		
 		public ICategoryRepository Category => _categoryRepository.Value;
 
-		public void Save() => _context.SaveChanges();
+		public async Task SaveAsync() => await _context.SaveChangesAsync();
 
 	}
 }
