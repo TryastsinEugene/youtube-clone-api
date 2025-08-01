@@ -16,6 +16,7 @@ namespace Persistance
 			base.OnModelCreating(builder);
 
 			builder.ApplyConfiguration(new CategoryConfiguration());
+			builder.ApplyConfiguration(new RoleConfiguration());
 		}
 
 		public DbSet<Category>? Categories { get; set; }

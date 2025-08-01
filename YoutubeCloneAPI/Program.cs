@@ -1,6 +1,7 @@
 using Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
+using Presentation.ActionFilters;
 using YoutubeCloneAPI.Extensions;
 
 namespace YoutubeCloneAPI
@@ -25,11 +26,14 @@ namespace YoutubeCloneAPI
 				options.SuppressModelStateInvalidFilter = true; // Disable default model state validation
 			});
 
+			builder.Services.AddScoped<ValidationFilterAttribute>();
+
 			builder.Services.AddControllers()
 				.AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly);
 
 			builder.Services.AddAuthentication();
 			builder.Services.ConfigureIdentity();
+			builder.Services.ConfigureJWT(builder.Configuration);
 			var app = builder.Build();
 
 
@@ -43,6 +47,7 @@ namespace YoutubeCloneAPI
 			app.UseHttpsRedirection();
 			app.UseStaticFiles();
 			app.UseCors("CorsPolicy");
+
 			app.UseAuthentication();
 			app.UseAuthorization();
 

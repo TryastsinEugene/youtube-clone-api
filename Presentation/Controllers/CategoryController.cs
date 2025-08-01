@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Presentation.ActionFilters;
 using Service.Abstractions;
 using Shared.DTOs;
+using Shared.RequestFeatures;
 
 namespace Presentation.Controllers
 {
@@ -16,11 +19,14 @@ namespace Presentation.Controllers
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> GetCategories()
+		[Authorize]
+		public async Task<IActionResult> GetCategories([FromQuery] CategoryParameters categoryParameters)
 		{
-			var categories = await _service.CategoryService.GetAllCategoriesAsync(trackChanges: false);
+			var pagedResult = await _service.CategoryService.GetAllCategoriesAsync(categoryParameters, trackChanges: false);
 
-			return Ok(categories);
+			Response.Headers.Add("X-Pagination", System.Text.Json.JsonSerializer.Serialize(pagedResult.metaData));
+
+			return Ok(pagedResult.categories);
 		}
 
 		[HttpGet("{id:guid}", Name = "CategoryById")]
@@ -32,14 +38,9 @@ namespace Presentation.Controllers
 		}
 
 		[HttpPost]
+		[ServiceFilter(typeof(ValidationFilterAttribute))]
 		public async Task<IActionResult> CreateCategory([FromBody] CategoryForCreationDto category)
 		{
-			if(category is null)
-				return BadRequest("Category data is null.");
-
-			if(!ModelState.IsValid)
-				return UnprocessableEntity(ModelState);
-
 			var createdCategory = await _service.CategoryService.CreateCategoryAsync(category);
 
 			return CreatedAtRoute("CategoryById", new { id = createdCategory.Id }, createdCategory);
@@ -53,15 +54,9 @@ namespace Presentation.Controllers
 		}
 
 		[HttpPut("{id:guid}")]
+		[ServiceFilter(typeof(ValidationFilterAttribute))]
 		public async Task<IActionResult> UpdateCategory(Guid id, [FromBody] CategoryForUpdateDto category)
 		{
-			if (category is null)
-				return BadRequest("Category data is null.");
-
-
-			if (!ModelState.IsValid)
-				return UnprocessableEntity(ModelState);
-
 			await _service.CategoryService.UpdateCategoryAsync(id, category, trackChanges: true);
 
 			return NoContent();
